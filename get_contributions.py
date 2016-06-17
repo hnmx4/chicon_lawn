@@ -6,11 +6,11 @@ import urllib2
 from bs4 import BeautifulSoup
 
 
-def pick_count_list(url):
+def pick_dayly_count(url):
   res = urllib2.urlopen(urllib2.Request(url))
-  lists = []
+  data = {}
   html = res.read()
   soup = BeautifulSoup(html, 'html.parser')
   for rect in soup.find_all('rect'):
-    lists.append(rect['data-count'])
-  return lists
+    data[rect['data-date']] = rect['data-count']
+  return data
