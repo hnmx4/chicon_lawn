@@ -18,8 +18,8 @@ url = 'https://github.com/users/' + denv('USER') + '/contributions'
 c = gc.pick_dayly_count(url)
 yday = datetime.date.today() - datetime.timedelta(1)
 yday = yday.strftime('%Y-%m-%d')
-yc = c[yday]
+yc = int(c[yday])
 
 select = lambda c: '4' if c > 4 else str(c)
 
-api.update_profile_image(select(yc)+'.png')
+api.update_profile_image(select(yc) + '.png')
