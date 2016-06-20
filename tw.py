@@ -14,12 +14,9 @@ def denv(envkey):
 auth = tweepy.OAuthHandler(denv('CONSUMER_KEY'), denv('CONSUMER_SECRET'))
 auth.set_access_token(denv('ACCESS_TOKEN'), denv('ACCESS_SECRET'))
 api = tweepy.API(auth)
-url = 'https://github.com/users/' + denv('USER') + '/contributions'
-c = gc.pick_dayly_count(url)
+c = gc.pick_dayly_count(denv('USER'))
 yday = datetime.date.today() - datetime.timedelta(1)
 yday = yday.strftime('%Y-%m-%d')
-yc = int(c[yday])
+yc = str(c[yday])
 
-select = lambda c: '4' if c > 4 else str(c)
-
-api.update_profile_image(abspath(dirname(__file__)) + '/' + select(yc) + '.png')
+api.update_profile_image(abspath(dirname(__file__)) + '/' + yc + '.png')
