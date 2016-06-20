@@ -3,7 +3,7 @@
 import tweepy
 import dotenv
 import datetime
-from os.path import join, dirname
+from os.path import join, dirname, abspath
 
 import get_contributions as gc
 
@@ -22,4 +22,4 @@ yc = int(c[yday])
 
 select = lambda c: '4' if c > 4 else str(c)
 
-api.update_profile_image(select(yc) + '.png')
+api.update_profile_image(abspath(dirname(__file__)) + '/' + select(yc) + '.png')
