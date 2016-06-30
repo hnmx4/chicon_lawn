@@ -3,8 +3,6 @@
 import tweepy
 import dotenv
 import datetime
-import sys
-import json
 import urllib2
 
 from bs4 import BeautifulSoup
@@ -16,22 +14,22 @@ def denv(envkey):
 
 
 def pick_dayly_level(username):
-  url = 'https://github.com/users/' + username + '/contributions'
-  res = urllib2.urlopen(urllib2.Request(url))
-  data = {}
-  html = res.read()
-  soup = BeautifulSoup(html, 'html.parser')
-  level = {
-      '#eeeeee': 0,
-      '#d6e685': 1,
-      '#8cc665': 2,
-      '#44a340': 3,
-      '#1e6823': 4
-  }
+    url = 'https://github.com/users/' + username + '/contributions'
+    res = urllib2.urlopen(urllib2.Request(url))
+    data = {}
+    html = res.read()
+    soup = BeautifulSoup(html, 'html.parser')
+    level = {
+        '#eeeeee': 0,
+        '#d6e685': 1,
+        '#8cc665': 2,
+        '#44a340': 3,
+        '#1e6823': 4
+    }
 
-  for rect in soup.find_all('rect'):
-    data[rect['data-date']] = level[rect['fill']]
-  return data
+    for rect in soup.find_all('rect'):
+        data[rect['data-date']] = level[rect['fill']]
+    return data
 
 
 auth = tweepy.OAuthHandler(denv('CONSUMER_KEY'), denv('CONSUMER_SECRET'))
