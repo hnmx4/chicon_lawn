@@ -92,4 +92,7 @@ lv = pick_dayly_level(denv('USER_GITHUB'), denv('USER_GITLAB'))
 yday = datetime.date.today() - datetime.timedelta(1)
 yday = yday.strftime('%Y-%m-%d')
 
-api.update_profile_image(abspath(dirname(__file__)) + '/' + (lambda x: 'ex' if x > 4 else str(x))(lv[yday]) + '.png')
+api.update_profile_image(
+    abspath(dirname(__file__)) + '/icons/' +
+    (lambda x: 'ex' if x > 4 else str(x))(lv[yday]) + '.png'
+)
