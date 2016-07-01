@@ -3,7 +3,6 @@
 import tweepy
 import dotenv
 import datetime
-import urllib2
 import calendar
 
 from bs4 import BeautifulSoup
@@ -34,9 +33,20 @@ def denv(envkey):
 
 def get_soup(pform, username):
     driver = webdriver.PhantomJS(service_log_path=devnull)
+
     if pform == 'github':
         url = 'https://github.com/users/' + str(username) + '/contributions'
     elif pform == 'gitlab':
+        url_login = 'https://gitlab.com/users/sign_in'
+        driver.get(url_login)
+
+        loginid = driver.find_element_by_xpath('//input[@name="user[login]"]')
+        passwd = driver.find_element_by_xpath('//input[@name="user[password]"]')
+        loginid.send_keys(denv('USER_GITLAB'))
+        passwd.send_keys(denv('PASSWD_GITLAB'))
+
+        driver.find_element_by_name('commit').submit()
+
         url = 'https://gitlab.com/u/' + str(username)
 
     driver.get(url)
@@ -82,9 +92,4 @@ lv = pick_dayly_level(denv('USER_GITHUB'), denv('USER_GITLAB'))
 yday = datetime.date.today() - datetime.timedelta(1)
 yday = yday.strftime('%Y-%m-%d')
 
-if lv[yday] > 4:
-    fp = '4'
-else:
-    fp = str(lv[yday])
-
-api.update_profile_image(abspath(dirname(__file__)) + '/' + fp + '.png')
+api.update_profile_image(abspath(dirname(__file__)) + '/' + (lambda x: 'ex' if x > 4 else str(x))(lv[yday]) + '.png')
