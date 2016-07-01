@@ -7,7 +7,8 @@ import urllib2
 import calendar
 
 from bs4 import BeautifulSoup
-from os.path import join, dirname, abspath
+from os.path import join, dirname, abspath, devnull
+from selenium import webdriver
 
 
 LEVEL_HUB = {
@@ -32,13 +33,14 @@ def denv(envkey):
 
 
 def get_soup(pform, username):
+    driver = webdriver.PhantomJS(service_log_path=devnull)
     if pform == 'github':
-        url = 'https://github.com/users/' + username + '/contributions'
+        url = 'https://github.com/users/' + str(username) + '/contributions'
     elif pform == 'gitlab':
-        url = 'https://gitlab.com/u/' + username
+        url = 'https://gitlab.com/u/' + str(username)
 
-    res = urllib2.urlopen(urllib2.Request(url))
-    html = res.read()
+    driver.get(url)
+    html = driver.page_source.encode('utf-8')
     soup = BeautifulSoup(html, 'html.parser')
 
     return soup
@@ -52,6 +54,23 @@ def pick_dayly_level(username_hub, username_lab):
     for rect in soup_hub.find_all('rect'):
         data[rect['data-date']] = LEVEL_HUB[rect['fill']]
 
+    months = {}
+    for i, v in enumerate(calendar.month_abbr):
+        months[v] = i
+    for rect in soup_lab.find_all('rect', attrs={'class': 'user-contrib-cell'}):
+        src = rect['data-original-title']
+        date = src.split('>')[1]
+        date = date.split()
+        date = (
+            str(date[2]) + '-' +
+            '{0:0>2}'.format(str(months[date[0]])) + '-' +
+            '{0:0>2}'.format(str(date[1]).rstrip(','))
+        )
+        if date in data:
+            data[date] += LEVEL_LAB[rect['fill']]
+        else:
+            data[rect[date]] = LEVEL_LAB[rect['fill']]
+
     return data
 
 
@@ -63,4 +82,9 @@ lv = pick_dayly_level(denv('USER_GITHUB'), denv('USER_GITLAB'))
 yday = datetime.date.today() - datetime.timedelta(1)
 yday = yday.strftime('%Y-%m-%d')
 
-api.update_profile_image(abspath(dirname(__file__)) + '/' + str(lv[yday]) + '.png')
+if lv[yday] > 4:
+    fp = '4'
+else:
+    fp = str(lv[yday])
+
+api.update_profile_image(abspath(dirname(__file__)) + '/' + fp + '.png')
