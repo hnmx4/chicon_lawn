@@ -40,8 +40,8 @@ def get_soup(pform, username):
         url_login = 'https://gitlab.com/users/sign_in'
         driver.get(url_login)
 
-        loginid = driver.find_element_by_xpath('//input[@name="user[login]"]')
-        passwd = driver.find_element_by_xpath('//input[@name="user[password]"]')
+        loginid = driver.find_element_by_xpath('//input[@id="user_login"]')
+        passwd = driver.find_element_by_xpath('//input[@id="user_password"]')
         loginid.send_keys(denv('USER_GITLAB'))
         passwd.send_keys(denv('PASSWD_GITLAB'))
 
@@ -92,8 +92,7 @@ lv = pick_dayly_level(denv('USER_GITHUB'), denv('USER_GITLAB'))
 yday = datetime.date.today() - datetime.timedelta(1)
 yday = yday.strftime('%Y-%m-%d')
 
-
-print('-----' + datetime.date.today() + '-----')
+print('-----' + str(datetime.datetime.today()) + '-----')
 api.update_profile_image(
     abspath(dirname(__file__)) + '/icons/' +
     (lambda x: 'ex' if x > 4 else str(x))(lv[yday]) + '.png'
