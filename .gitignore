@@ -1,4 +1,4 @@
-config.py
 .env
 *.pyc
 .idea
+.python-version
