@@ -69,12 +69,14 @@ def pick_dayly_level(username_hub, username_lab):
         months[v] = i
     for rect in soup_lab.find_all('rect', attrs={'class': 'user-contrib-cell'}):
         src = rect['data-original-title']
-        date = src.split('>')[1]
+        # gitlab date format is like "Thursday Jul 21 2016"
+        date = src.split('<br />')[1]
         date = date.split()
+        # make date format the same like "2016-07-21"
         date = (
-            str(date[2]) + '-' +
-            '{0:0>2}'.format(str(months[date[0]])) + '-' +
-            '{0:0>2}'.format(str(date[1]).rstrip(','))
+            str(date[3]) + '-' +
+            '{0:0>2}'.format(str(months[date[1]])) + '-' +
+            '{0:0>2}'.format(str(date[2]).rstrip(','))
         )
         if date in data:
             data[date] += LEVEL_LAB[rect['fill']]
