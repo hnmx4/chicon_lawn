@@ -10,11 +10,11 @@ from selenium import webdriver
 
 
 LEVEL_HUB = {
-    '#eeeeee': 0,
-    '#d6e685': 1,
-    '#8cc665': 2,
-    '#44a340': 3,
-    '#1e6823': 4
+    '#ebedf0': 0,
+    '#c6e48b': 1,
+    '#7bc96f': 2,
+    '#239a3b': 3,
+    '#196127': 4
 }
 LEVEL_LAB = {
     '#ededed': 0,
@@ -53,7 +53,7 @@ def get_soup(pform, username):
 
 def pick_dayly_level(username_hub, username_lab):
     soup_hub = get_soup('github', username_hub)
-    soup_lab = get_soup('gitlab', username_lab)
+    # soup_lab = get_soup('gitlab', username_lab)
 
     data = {}
     for rect in soup_hub.find_all('rect'):
@@ -62,18 +62,18 @@ def pick_dayly_level(username_hub, username_lab):
     months = {}
     for i, v in enumerate(calendar.month_abbr):
         months[v] = i
-    for rect in soup_lab.find_all('rect',
-                                  attrs={'class': 'user-contrib-cell'}):
-        src = rect['data-original-title'].split('>')[1].split()
-        date = '-'.join([
-            str(src[3]),
-            '{0:0>2}'.format(str(months[src[1]])),
-            '{0:0>2}'.format(str(src[2]).rstrip(','))
-        ])
-        if date in data:
-            data[date] += LEVEL_LAB[rect['fill']]
-        else:
-            data[date] = LEVEL_LAB[rect['fill']]
+    # for rect in soup_lab.find_all('rect',
+    #                               attrs={'class': 'user-contrib-cell'}):
+    #     src = rect['data-original-title'].split('>')[1].split()
+    #     date = '-'.join([
+    #         str(src[3]),
+    #         '{0:0>2}'.format(str(months[src[1]])),
+    #         '{0:0>2}'.format(str(src[2]).rstrip(','))
+    #     ])
+    #     if date in data:
+    #         data[date] += LEVEL_LAB[rect['fill']]
+    #     else:
+    #         data[date] = LEVEL_LAB[rect['fill']]
 
     return data
 
